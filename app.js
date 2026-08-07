@@ -167,24 +167,15 @@ QUICK ACTIONS
 
 function initializeQuickActions() {
 
-    const actions = {
+    document.querySelectorAll(".action-card").forEach(btn => {
 
-        quickAnalyzer: "analyzer",
-        quickURL: "url",
-        quickUPI: "upi",
-        quickChat: "chat"
+        const page = btn.dataset.page;
 
-    };
-
-    Object.keys(actions).forEach(id => {
-
-        const btn = document.getElementById(id);
-
-        if (btn) {
+        if (page) {
 
             btn.addEventListener("click", () => {
 
-                navigateTo(actions[id]);
+                navigateTo(page);
 
             });
 
@@ -200,24 +191,15 @@ SECURITY TOOL BUTTONS
 
 function initializeToolButtons() {
 
-    const tools = {
+    document.querySelectorAll(".tool-btn").forEach(btn => {
 
-        toolAnalyzer: "analyzer",
-        toolURL: "url",
-        toolUPI: "upi",
-        toolTransaction: "transaction"
+        const page = btn.dataset.page;
 
-    };
-
-    Object.keys(tools).forEach(id => {
-
-        const btn = document.getElementById(id);
-
-        if (btn) {
+        if (page) {
 
             btn.addEventListener("click", () => {
 
-                navigateTo(tools[id]);
+                navigateTo(page);
 
             });
 

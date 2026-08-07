@@ -1,104 +1,19 @@
 /* ==========================================================
    ScamShield AI
    app.js
-   Core Navigation & UI Controller
+   Main Application Controller
 ========================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
 
     initializeNavigation();
-    initializeTheme();
-    initializeButtons();
+    initializeHeaderButtons();
+    initializeHomeButtons();
+    initializeQuickActions();
+    initializeToolButtons();
+    initializeCounters();
 
 });
-
-/* ==========================================================
-NAVIGATION
-========================================================== */
-
-function initializeNavigation() {
-
-    const navButtons = document.querySelectorAll(".nav");
-    const pages = document.querySelectorAll(".page");
-    const pageTitle = document.getElementById("pageTitle");
-
-    navButtons.forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            const target = button.dataset.page;
-
-            // Active Navigation
-            navButtons.forEach(btn =>
-                btn.classList.remove("active")
-            );
-
-            button.classList.add("active");
-
-            // Hide all pages
-            pages.forEach(page =>
-                page.classList.remove("active")
-            );
-
-            // Show selected page
-            const selectedPage =
-                document.getElementById(target);
-
-            if (selectedPage) {
-
-                selectedPage.classList.add("active");
-
-            }
-
-            // Update Title
-            pageTitle.textContent =
-                button.querySelector("span").innerText;
-
-            // Scroll to top
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
-
-        });
-
-    });
-
-}
-
-/* ==========================================================
-HOME PAGE BUTTONS
-========================================================== */
-
-function initializeButtons() {
-
-    const scanButton =
-        document.getElementById("scanNow");
-
-    if (scanButton) {
-
-        scanButton.addEventListener("click", () => {
-
-            navigateTo("analyzer");
-
-        });
-
-    }
-
-    const learnButton =
-        document.getElementById("learnMore");
-
-    if (learnButton) {
-
-        learnButton.addEventListener("click", () => {
-
-            navigateTo("education");
-
-        });
-
-    }
-
-}
 
 /* ==========================================================
 PAGE NAVIGATION
@@ -106,48 +21,37 @@ PAGE NAVIGATION
 
 function navigateTo(pageName) {
 
-    document
-        .querySelectorAll(".nav")
-        .forEach(nav => {
+    // Navigation Buttons
+    document.querySelectorAll(".nav").forEach(nav => {
 
-            nav.classList.remove("active");
+        nav.classList.remove("active");
 
-            if (nav.dataset.page === pageName) {
+        if (nav.dataset.page === pageName) {
+            nav.classList.add("active");
+        }
 
-                nav.classList.add("active");
+    });
 
-            }
+    // Pages
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+    });
 
-        });
-
-    document
-        .querySelectorAll(".page")
-        .forEach(page =>
-            page.classList.remove("active")
-        );
-
-    const page =
-        document.getElementById(pageName);
+    const page = document.getElementById(pageName);
 
     if (page) {
-
         page.classList.add("active");
-
     }
 
-    const pageTitle =
-        document.getElementById("pageTitle");
+    // Page Title
+    const title = document.getElementById("pageTitle");
 
-    const activeButton =
-        document.querySelector(
-            `.nav[data-page="${pageName}"] span`
-        );
+    const activeNav = document.querySelector(
+        `.nav[data-page="${pageName}"] span`
+    );
 
-    if (activeButton) {
-
-        pageTitle.textContent =
-            activeButton.innerText;
-
+    if (activeNav) {
+        title.textContent = activeNav.textContent;
     }
 
     window.scrollTo({
@@ -158,37 +62,131 @@ function navigateTo(pageName) {
 }
 
 /* ==========================================================
-THEME TOGGLE
+SIDEBAR NAVIGATION
 ========================================================== */
 
-function initializeTheme() {
+function initializeNavigation() {
 
-    const buttons =
-        document.querySelectorAll(".header-actions button");
+    document.querySelectorAll(".nav").forEach(button => {
 
-    if (buttons.length < 2) return;
+        button.addEventListener("click", () => {
 
-    const themeButton = buttons[1];
+            navigateTo(button.dataset.page);
 
-    let darkMode = true;
+        });
 
-    themeButton.addEventListener("click", () => {
+    });
 
-        darkMode = !darkMode;
+}
 
-        if (darkMode) {
+/* ==========================================================
+HEADER BUTTONS
+========================================================== */
 
-            document.body.classList.remove("light");
+function initializeHeaderButtons() {
 
-            themeButton.innerHTML =
-                '<i class="fa-solid fa-moon"></i>';
+    const notificationBtn = document.getElementById("notificationBtn");
+    const themeBtn = document.getElementById("themeBtn");
 
-        } else {
+    if (notificationBtn) {
 
-            document.body.classList.add("light");
+        notificationBtn.addEventListener("click", () => {
 
-            themeButton.innerHTML =
-                '<i class="fa-solid fa-sun"></i>';
+            alert(
+`🛡 ScamShield AI
+
+System Status: Protected
+
+• No active threats
+• All scans completed
+• Your security score is Excellent`
+            );
+
+        });
+
+    }
+
+    if (themeBtn) {
+
+        themeBtn.addEventListener("click", () => {
+
+            document.body.classList.toggle("light");
+
+            const icon = themeBtn.querySelector("i");
+
+            if (document.body.classList.contains("light")) {
+
+                icon.className = "fa-solid fa-sun";
+
+            } else {
+
+                icon.className = "fa-solid fa-moon";
+
+            }
+
+        });
+
+    }
+
+}
+
+/* ==========================================================
+HOME PAGE BUTTONS
+========================================================== */
+
+function initializeHomeButtons() {
+
+    const scanNow = document.getElementById("scanNow");
+    const learnMore = document.getElementById("learnMore");
+
+    if (scanNow) {
+
+        scanNow.addEventListener("click", () => {
+
+            navigateTo("analyzer");
+
+        });
+
+    }
+
+    if (learnMore) {
+
+        learnMore.addEventListener("click", () => {
+
+            navigateTo("education");
+
+        });
+
+    }
+
+}
+
+/* ==========================================================
+QUICK ACTIONS
+========================================================== */
+
+function initializeQuickActions() {
+
+    const actions = {
+
+        quickAnalyzer: "analyzer",
+        quickURL: "url",
+        quickUPI: "upi",
+        quickChat: "chat"
+
+    };
+
+    Object.keys(actions).forEach(id => {
+
+        const btn = document.getElementById(id);
+
+        if (btn) {
+
+            btn.addEventListener("click", () => {
+
+                navigateTo(actions[id]);
+
+            });
 
         }
 
@@ -197,97 +195,120 @@ function initializeTheme() {
 }
 
 /* ==========================================================
-NOTIFICATION BUTTON
+SECURITY TOOL BUTTONS
 ========================================================== */
 
-const notificationButton =
-    document.querySelector(".header-actions button");
+function initializeToolButtons() {
 
-if (notificationButton) {
+    const tools = {
 
-    notificationButton.addEventListener("click", () => {
+        toolAnalyzer: "analyzer",
+        toolURL: "url",
+        toolUPI: "upi",
+        toolTransaction: "transaction"
 
-        alert(
-            "🛡 ScamShield AI\n\nNo new threats detected.\nYour device is protected."
-        );
+    };
+
+    Object.keys(tools).forEach(id => {
+
+        const btn = document.getElementById(id);
+
+        if (btn) {
+
+            btn.addEventListener("click", () => {
+
+                navigateTo(tools[id]);
+
+            });
+
+        }
 
     });
 
 }
 
 /* ==========================================================
-ANIMATE STATISTICS
+ANIMATED COUNTERS
 ========================================================== */
 
 function animateCounter(element, target) {
 
-    let count = 0;
+    if (!element) return;
 
-    const increment = target / 100;
+    let current = 0;
+
+    const increment = target / 120;
 
     const timer = setInterval(() => {
 
-        count += increment;
+        current += increment;
 
-        if (count >= target) {
+        if (current >= target) {
 
-            count = target;
-
+            current = target;
             clearInterval(timer);
 
         }
 
-        element.innerText =
-            Math.floor(count).toLocaleString();
+        element.textContent = Math.floor(current).toLocaleString();
 
     }, 15);
 
 }
 
-window.addEventListener("load", () => {
+function initializeCounters() {
 
-    const cards =
-        document.querySelectorAll(".stats .card h2");
+    animateCounter(
+        document.getElementById("threatCount"),
+        12584
+    );
 
-    if (cards.length >= 4) {
+    animateCounter(
+        document.getElementById("scanCount"),
+        53281
+    );
 
-        animateCounter(cards[0], 12584);
+    const accuracy = document.getElementById("accuracyCount");
 
-        animateCounter(cards[1], 53281);
-
-        cards[2].innerText = "99.8%";
-
-        cards[3].innerText = "24/7";
-
+    if (accuracy) {
+        accuracy.textContent = "99.8%";
     }
 
-});
+    const uptime = document.getElementById("uptimeCount");
+
+    if (uptime) {
+        uptime.textContent = "24/7";
+    }
+
+}
 
 /* ==========================================================
-FLOATING EFFECT
+CARD HOVER EFFECT
 ========================================================== */
 
-document.querySelectorAll(".card").forEach(card => {
+document.addEventListener("mousemove", () => {
 
-    card.addEventListener("mousemove", e => {
+    document.querySelectorAll(".card").forEach(card => {
 
-        const rect = card.getBoundingClientRect();
+        card.addEventListener("mousemove", e => {
 
-        const x = e.clientX - rect.left;
+            const rect = card.getBoundingClientRect();
 
-        const y = e.clientY - rect.top;
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
 
-        card.style.background =
-            `radial-gradient(circle at ${x}px ${y}px,
-            rgba(59,130,246,.20),
-            rgba(255,255,255,.05))`;
+            card.style.background =
+                `radial-gradient(circle at ${x}px ${y}px,
+                rgba(59,130,246,.18),
+                rgba(255,255,255,.05))`;
 
-    });
+        });
 
-    card.addEventListener("mouseleave", () => {
+        card.addEventListener("mouseleave", () => {
 
-        card.style.background =
-            "rgba(255,255,255,.05)";
+            card.style.background = "";
+
+        });
 
     });
 
@@ -299,21 +320,49 @@ KEYBOARD SHORTCUTS
 
 document.addEventListener("keydown", e => {
 
-    if (e.key === "1") navigateTo("home");
+    switch (e.key) {
 
-    if (e.key === "2") navigateTo("analyzer");
+        case "1":
+            navigateTo("home");
+            break;
 
-    if (e.key === "3") navigateTo("url");
+        case "2":
+            navigateTo("analyzer");
+            break;
 
-    if (e.key === "4") navigateTo("upi");
+        case "3":
+            navigateTo("url");
+            break;
 
-    if (e.key === "5") navigateTo("transaction");
+        case "4":
+            navigateTo("upi");
+            break;
 
-    if (e.key === "6") navigateTo("chat");
+        case "5":
+            navigateTo("transaction");
+            break;
 
-    if (e.key === "7") navigateTo("dashboard");
+        case "6":
+            navigateTo("chat");
+            break;
 
-    if (e.key === "8") navigateTo("education");
+        case "7":
+            navigateTo("dashboard");
+            break;
+
+        case "8":
+            navigateTo("education");
+            break;
+
+        case "9":
+            navigateTo("emergency");
+            break;
+
+        case "0":
+            navigateTo("settings");
+            break;
+
+    }
 
 });
 

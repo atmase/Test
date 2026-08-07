@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initializeQuickActions();
     initializeToolButtons();
     initializeCounters();
+    initializeProfileMenu();
 
 });
 
@@ -91,6 +92,33 @@ function initializeHeaderButtons() {
     if (notificationBtn) {
 
         notificationBtn.addEventListener("click", () => {
+
+            let notificationsEnabled = true;
+
+            try {
+
+                const settings = JSON.parse(
+                    localStorage.getItem("scamshield_settings")
+                );
+
+                if (settings && settings.notifications === false) {
+                    notificationsEnabled = false;
+                }
+
+            } catch (error) {
+                // default to enabled if settings can't be read
+            }
+
+            if (!notificationsEnabled) {
+
+                alert(
+                    "Notifications are turned off. " +
+                    "Enable them in Settings to see status alerts."
+                );
+
+                return;
+
+            }
 
             alert(
 `🛡 ScamShield AI
@@ -204,6 +232,58 @@ function initializeToolButtons() {
             });
 
         }
+
+    });
+
+}
+
+/* ==========================================================
+PROFILE MENU
+========================================================== */
+
+function initializeProfileMenu() {
+
+    const profileBtn = document.getElementById("profileBtn");
+    const profileMenu = document.getElementById("profileMenu");
+    const signOutBtn = document.getElementById("signOutBtn");
+
+    if (!profileBtn || !profileMenu) return;
+
+    profileBtn.addEventListener("click", (e) => {
+
+        e.stopPropagation();
+        profileMenu.classList.toggle("open");
+
+    });
+
+    profileMenu.querySelectorAll("button[data-page]").forEach(btn => {
+
+        btn.addEventListener("click", (e) => {
+
+            e.stopPropagation();
+            navigateTo(btn.dataset.page);
+            profileMenu.classList.remove("open");
+
+        });
+
+    });
+
+    if (signOutBtn) {
+
+        signOutBtn.addEventListener("click", (e) => {
+
+            e.stopPropagation();
+            profileMenu.classList.remove("open");
+            alert("This is a demo build, so there's no live account " +
+                "to sign out of yet — but this is where sign-out would happen.");
+
+        });
+
+    }
+
+    document.addEventListener("click", () => {
+
+        profileMenu.classList.remove("open");
 
     });
 

@@ -49,6 +49,12 @@ function scanURL() {
 
     updateURLUI(result);
 
+    logScanToHistory(
+        "URL Scanner",
+        result.status,
+        result.score
+    );
+
 }
 
 /* ==========================================================
@@ -62,11 +68,20 @@ function analyzeURL(url) {
     const reasons = [];
     const recommendations = [];
 
-    const value = url.trim().toLowerCase();
+    let value = url.trim().toLowerCase();
 
     /* ==========================================
        URL VALIDATION
+       (people often paste a bare domain like
+       "example.com" with no protocol prefix --
+       treat that as valid input, not an error)
     ========================================== */
+
+    const hadNoProtocol = !/^https?:\/\//.test(value);
+
+    if (hadNoProtocol) {
+        value = "https://" + value;
+    }
 
     try {
 
@@ -85,7 +100,7 @@ function analyzeURL(url) {
             ],
 
             recommendations: [
-                "Enter a valid URL including https://"
+                "Enter a valid URL, e.g. example.com or https://example.com"
             ]
 
         };
@@ -96,7 +111,7 @@ function analyzeURL(url) {
        HTTPS CHECK
     ========================================== */
 
-    if (!value.startsWith("https://")) {
+    if (hadNoProtocol || !value.startsWith("https://")) {
 
         score += 15;
 
@@ -441,37 +456,58 @@ function updateURLUI(result) {
     // Clear previous results
     resultList.innerHTML = "";
 
+    // Verdict summary
+    const verdictLi = document.createElement("li");
+    verdictLi.className = "verdict";
+    verdictLi.textContent = `Verdict: ${result.status} — risk score ${result.score}/100.`;
+    resultList.appendChild(verdictLi);
+
     // Reasons
-    result.reasons.forEach(reason => {
+    const reasonsHeader = document.createElement("li");
+    reasonsHeader.className = "section-label";
+    reasonsHeader.textContent = "Risk Indicators Found";
+    resultList.appendChild(reasonsHeader);
+
+    if (result.reasons.length === 0) {
 
         const li = document.createElement("li");
-
         li.innerHTML =
-            `<span style="color:#ef4444;">⚠</span> ${reason}`;
-
+            `<span style="color:#22c55e;">✔</span> No suspicious signals found in this URL.`;
         resultList.appendChild(li);
 
-    });
+    } else {
+
+        result.reasons.forEach(reason => {
+
+            const li = document.createElement("li");
+
+            li.innerHTML =
+                `<span style="color:#ef4444;">⚠</span> ${reason}`;
+
+            resultList.appendChild(li);
+
+        });
+
+    }
 
     // Recommendations
-    result.recommendations.forEach(item => {
+    if (result.recommendations.length > 0) {
 
-        const li = document.createElement("li");
+        const recHeader = document.createElement("li");
+        recHeader.className = "section-label";
+        recHeader.textContent = "Recommended Actions";
+        resultList.appendChild(recHeader);
 
-        li.innerHTML =
-            `<span style="color:#22c55e;">✔</span> ${item}`;
+        result.recommendations.forEach(item => {
 
-        resultList.appendChild(li);
+            const li = document.createElement("li");
 
-    });
+            li.innerHTML =
+                `<span style="color:#22c55e;">✔</span> ${item}`;
 
-    if (
-        result.reasons.length === 0 &&
-        result.recommendations.length === 0
-    ) {
+            resultList.appendChild(li);
 
-        resultList.innerHTML =
-            "<li>No issues detected.</li>";
+        });
 
     }
 

@@ -204,11 +204,27 @@
 
                     </button>
 
-                    <div class="profile">
+                    <div class="profile" id="profileBtn">
 
                         <i class="fa-solid fa-user-circle fa-2x"></i>
 
                         <span>Guest User</span>
+
+                        <div class="profile-menu" id="profileMenu">
+
+                            <button data-page="settings">
+                                <i class="fa-solid fa-gear"></i> Settings
+                            </button>
+
+                            <button data-page="dashboard">
+                                <i class="fa-solid fa-chart-line"></i> My Dashboard
+                            </button>
+
+                            <button id="signOutBtn">
+                                <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                            </button>
+
+                        </div>
 
                     </div>
 
@@ -1135,25 +1151,25 @@
 
     <div class="dashboard-card">
 
-        <h2>Total Threats Blocked</h2>
+        <h2>Total Scans Run</h2>
 
-        <h1>12,584</h1>
-
-    </div>
-
-    <div class="dashboard-card">
-
-        <h2>Messages Analyzed</h2>
-
-        <h1>53,281</h1>
+        <h1 id="dashTotalScans">0</h1>
 
     </div>
 
     <div class="dashboard-card">
 
-        <h2>Detection Accuracy</h2>
+        <h2>High Risk Found</h2>
 
-        <h1>99.8%</h1>
+        <h1 id="dashHighRisk">0</h1>
+
+    </div>
+
+    <div class="dashboard-card">
+
+        <h2>Safe Results</h2>
+
+        <h1 id="dashSafeCount">0</h1>
 
     </div>
 
@@ -1170,6 +1186,20 @@
 <div class="chart-card">
 
     <canvas id="dashboardChart"></canvas>
+
+</div>
+
+<div class="chart-card" id="dashboardHistoryCard">
+
+    <div class="dashboard-history-header">
+
+        <h2>Recent Scans</h2>
+
+        <button id="clearHistoryBtn">Clear History</button>
+
+    </div>
+
+    <ul id="dashboardHistoryList"></ul>
 
 </div>
 
@@ -1404,6 +1434,7 @@
 
             <input
                 type="checkbox"
+                id="settingNotifications"
                 checked>
 
         </label>
@@ -1414,6 +1445,7 @@
 
             <input
                 type="checkbox"
+                id="settingSaveHistory"
                 checked>
 
         </label>
@@ -1424,6 +1456,7 @@
 
             <input
                 type="checkbox"
+                id="settingDarkTheme"
                 checked>
 
         </label>
@@ -1432,7 +1465,7 @@
 
             Language
 
-            <select>
+            <select id="settingLanguage">
 
                 <option>English</option>
                 <option>Hindi</option>
@@ -1443,6 +1476,8 @@
         </label>
 
     </div>
+
+    <p class="settings-saved-note" id="settingsSavedNote"></p>
 
 </section>
 
@@ -1486,7 +1521,6 @@
 <script src="chatbot.js"></script>
 <script src="storage.js"></script>
 <script src="dashboard.js"></script>
-<script src="education.js"></script>
 <script src="settings.js"></script>
 
 </body>

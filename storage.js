@@ -36,7 +36,8 @@ const StorageManager = {
 
         });
 
-        this.saveHistory(history);
+        // Keep the log from growing without bound
+        this.saveHistory(history.slice(0, 200));
 
     },
 
@@ -59,6 +60,10 @@ const StorageManager = {
                 x => x.status === "Safe"
             ).length,
 
+            lowRisk: history.filter(
+                x => x.status === "Low Risk"
+            ).length,
+
             suspicious: history.filter(
                 x => x.status === "Suspicious"
             ).length,
@@ -72,3 +77,53 @@ const StorageManager = {
     }
 
 };
+
+/* ==========================================
+   Shared helper used by every scan tool to
+   log a result. Normalizes each tool's own
+   status/level wording into the 4 buckets
+   StorageManager.getStats() understands:
+   "Safe" | "Low Risk" | "Suspicious" | "High Risk"
+========================================== */
+
+function logScanToHistory(tool, rawStatus, score) {
+
+    // Respect the "Save Scan History" toggle in Settings, if set.
+    try {
+
+        const settings = JSON.parse(
+            localStorage.getItem("scamshield_settings")
+        );
+
+        if (settings && settings.saveHistory === false) {
+            return;
+        }
+
+    } catch (error) {
+        // If settings can't be read, default to saving history.
+    }
+
+    const statusMap = {
+
+        "Safe": "Safe",
+        "Verified": "Safe",
+        "Low Risk": "Low Risk",
+        "Medium Risk": "Suspicious",
+        "Suspicious": "Suspicious",
+        "High Risk": "High Risk",
+        "Danger": "High Risk",
+        "Invalid": "High Risk",
+        "Invalid URL": "High Risk"
+
+    };
+
+    StorageManager.addScan({
+
+        tool,
+        status: statusMap[rawStatus] || rawStatus,
+        score: typeof score === "number" ? score : null,
+        timestamp: Date.now()
+
+    });
+
+}

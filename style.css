@@ -276,6 +276,10 @@ Sidebar
 
     justify-content:space-between;
 
+    overflow-y:auto;
+
+    scrollbar-width:thin;
+
     z-index:999;
 
 }
@@ -545,7 +549,7 @@ header p{
 
     background:var(--glass);
 
-    color:white;
+    color:var(--text);
 
     cursor:pointer;
 
@@ -574,6 +578,82 @@ header p{
     padding:8px 16px;
 
     border-radius:50px;
+
+    position:relative;
+
+    cursor:pointer;
+
+}
+
+.profile-menu{
+
+    position:absolute;
+
+    top:calc(100% + 12px);
+
+    right:0;
+
+    min-width:200px;
+
+    background:var(--bg2, #0b1225);
+
+    border:1px solid var(--border);
+
+    border-radius:16px;
+
+    box-shadow:var(--shadow);
+
+    padding:10px;
+
+    display:none;
+
+    flex-direction:column;
+
+    gap:4px;
+
+    z-index:1200;
+
+}
+
+.profile-menu.open{
+
+    display:flex;
+
+}
+
+.profile-menu button{
+
+    width:100%;
+
+    text-align:left;
+
+    background:transparent;
+
+    border:none;
+
+    color:var(--text);
+
+    padding:12px 14px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:14px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    transition:.2s;
+
+}
+
+.profile-menu button:hover{
+
+    background:var(--glass);
 
 }
 
@@ -745,7 +825,7 @@ BUTTONS
 
     background:var(--glass);
 
-    color:white;
+    color:var(--text);
 
     border:1px solid var(--border);
 
@@ -1203,7 +1283,7 @@ QUICK ACTIONS
 
     padding:28px;
 
-    color:white;
+    color:var(--text);
 
     cursor:pointer;
 
@@ -1378,11 +1458,11 @@ INPUTS
 
     width:100%;
 
-    background:rgba(255,255,255,.04);
+    background:var(--glass);
 
-    border:1px solid rgba(255,255,255,.08);
+    border:1px solid var(--border);
 
-    color:white;
+    color:var(--text);
 
     border-radius:18px;
 
@@ -1626,7 +1706,7 @@ RESULT LIST
 
     border-radius:14px;
 
-    background:rgba(255,255,255,.04);
+    background:var(--glass);
 
     border-left:4px solid var(--cyan);
 
@@ -1662,11 +1742,47 @@ URL RESULT LIST
 
     border-radius:14px;
 
-    background:rgba(255,255,255,.05);
+    background:var(--glass);
 
     color:var(--text2);
 
     border-left:4px solid var(--blue);
+
+}
+
+#urlResult li.section-label,
+#upiResult li.section-label,
+#transactionResult li.section-label,
+.analysis-list li.section-label{
+
+    background:transparent;
+
+    border-left:none;
+
+    padding:8px 4px 0;
+
+    font-size:13px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.05em;
+
+    font-weight:700;
+
+    color:var(--text2);
+
+}
+
+#urlResult li.verdict,
+#upiResult li.verdict,
+#transactionResult li.verdict,
+.analysis-list li.verdict{
+
+    border-left-width:6px;
+
+    font-weight:600;
+
+    color:var(--text);
 
 }
 
@@ -1847,8 +1963,8 @@ SMALL ANIMATIONS
     outline:none;
     padding:0 20px;
     border-radius:16px;
-    background:rgba(255,255,255,.05);
-    color:white;
+    background:var(--glass);
+    color:var(--text);
 
 }
 
@@ -1930,6 +2046,81 @@ DASHBOARD
 
     width:100% !important;
     height:380px !important;
+
+}
+
+#dashboardHistoryCard{
+
+    min-height:0;
+
+}
+
+.dashboard-history-header{
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+
+}
+
+.dashboard-history-header button{
+
+    background:var(--glass);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:10px 18px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:14px;
+    transition:.2s;
+
+}
+
+.dashboard-history-header button:hover{
+
+    background:var(--red);
+    color:white;
+    border-color:var(--red);
+
+}
+
+#dashboardHistoryList{
+
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+
+}
+
+#dashboardHistoryList li{
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:14px 18px;
+    font-size:14px;
+    color:var(--text2);
+
+}
+
+#dashboardHistoryList li span.dash-status{
+
+    font-weight:700;
+    padding:4px 12px;
+    border-radius:20px;
+    font-size:12px;
+
+}
+
+#dashboardHistoryList li.empty{
+
+    justify-content:center;
+    color:var(--text2);
 
 }
 
@@ -2059,6 +2250,23 @@ SETTINGS
     border:none;
     border-radius:10px;
     padding:10px 16px;
+
+}
+
+.settings-saved-note{
+
+    margin-top:16px;
+    color:var(--green);
+    font-size:14px;
+    height:18px;
+    opacity:0;
+    transition:opacity .3s;
+
+}
+
+.settings-saved-note.visible{
+
+    opacity:1;
 
 }
 

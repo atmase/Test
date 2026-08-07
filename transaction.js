@@ -49,6 +49,12 @@ function verifyTransaction() {
 
     updateTransactionUI(result);
 
+    logScanToHistory(
+        "Transaction Verification",
+        result.status,
+        result.score
+    );
+
 }
 
 /* ==========================================================
@@ -291,35 +297,60 @@ function updateTransactionUI(result) {
 
     list.innerHTML = "";
 
-    result.reasons.forEach(reason => {
+    // Verdict summary
+    const verdictLi = document.createElement("li");
+    verdictLi.className = "verdict";
+    verdictLi.textContent = `Verdict: ${result.status} — risk score ${result.score}/100.`;
+    list.appendChild(verdictLi);
+
+    // Reasons
+    const reasonsHeader = document.createElement("li");
+    reasonsHeader.className = "section-label";
+    reasonsHeader.textContent = "Risk Indicators Found";
+    list.appendChild(reasonsHeader);
+
+    if (result.reasons.length === 0) {
 
         const li = document.createElement("li");
 
         li.innerHTML =
-            `<strong>⚠</strong> ${reason}`;
+            `<strong>✔</strong> No suspicious signals found for this transaction.`;
 
         list.appendChild(li);
 
-    });
+    } else {
 
-    result.recommendations.forEach(item => {
+        result.reasons.forEach(reason => {
 
-        const li = document.createElement("li");
+            const li = document.createElement("li");
 
-        li.innerHTML =
-            `<strong>✔</strong> ${item}`;
+            li.innerHTML =
+                `<strong>⚠</strong> ${reason}`;
 
-        list.appendChild(li);
+            list.appendChild(li);
 
-    });
+        });
 
-    if (
-        result.reasons.length === 0 &&
-        result.recommendations.length === 0
-    ) {
+    }
 
-        list.innerHTML =
-            "<li>No issues detected.</li>";
+    // Recommendations
+    if (result.recommendations.length > 0) {
+
+        const recHeader = document.createElement("li");
+        recHeader.className = "section-label";
+        recHeader.textContent = "Recommended Actions";
+        list.appendChild(recHeader);
+
+        result.recommendations.forEach(item => {
+
+            const li = document.createElement("li");
+
+            li.innerHTML =
+                `<strong>✔</strong> ${item}`;
+
+            list.appendChild(li);
+
+        });
 
     }
 

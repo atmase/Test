@@ -49,6 +49,12 @@ function analyzeMessage() {
 
     updateAnalyzerUI(result);
 
+    logScanToHistory(
+        "Message Analyzer",
+        result.level,
+        result.score
+    );
+
 }
 
 /* ==========================================================
@@ -422,16 +428,42 @@ function updateAnalyzerUI(result) {
     // Clear Previous Results
     analysisOutput.innerHTML = "";
 
+    // Verdict Summary
+    const verdictLi = document.createElement("li");
+    verdictLi.className = "verdict";
+    verdictLi.textContent = getAnalyzerVerdict(result);
+    analysisOutput.appendChild(verdictLi);
+
     // Threat Reasons
-    result.reasons.forEach(reason => {
+    const reasonsHeader = document.createElement("li");
+    reasonsHeader.className = "section-label";
+    reasonsHeader.textContent = "Risk Indicators Found";
+    analysisOutput.appendChild(reasonsHeader);
+
+    if (result.reasons.length === 0) {
 
         const li = document.createElement("li");
-        li.innerHTML = `<strong>⚠</strong> ${reason}`;
+        li.innerHTML = `<strong>✔</strong> No suspicious patterns detected in this message.`;
         analysisOutput.appendChild(li);
 
-    });
+    } else {
+
+        result.reasons.forEach(reason => {
+
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>⚠</strong> ${reason}`;
+            analysisOutput.appendChild(li);
+
+        });
+
+    }
 
     // Recommendations
+    const recHeader = document.createElement("li");
+    recHeader.className = "section-label";
+    recHeader.textContent = "Recommended Actions";
+    analysisOutput.appendChild(recHeader);
+
     result.recommendations.forEach(recommendation => {
 
         const li = document.createElement("li");
@@ -439,6 +471,19 @@ function updateAnalyzerUI(result) {
         analysisOutput.appendChild(li);
 
     });
+
+}
+
+function getAnalyzerVerdict(result) {
+
+    const flagCount = result.reasons.length;
+
+    if (result.level === "Safe") {
+        return `Verdict: No major scam indicators found (risk score ${result.score}/100).`;
+    }
+
+    return `Verdict: ${flagCount} risk indicator${flagCount === 1 ? "" : "s"} ` +
+        `found — classified as ${result.level} (risk score ${result.score}/100).`;
 
 }
 

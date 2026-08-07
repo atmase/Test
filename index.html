@@ -1036,39 +1036,60 @@
 
     </div>
 
-    <div class="chat-container">
+<div class="chat-container">
 
-        <div id="chatMessages">
+    <!-- Chat Toolbar -->
 
-            <div class="bot-message">
+    <div class="chat-toolbar">
 
-                👋 Hello! I'm ScamShield AI.
+        <button onclick="clearChat()">
 
-                <br><br>
+            <i class="fa-solid fa-trash"></i>
 
-                I can help you identify scams, explain cyber
-                threats, and provide online safety guidance.
+            Clear Chat
 
-            </div>
+        </button>
 
-        </div>
+    </div>
 
-        <div class="chat-input">
+    <!-- Chat Messages -->
 
-            <input
-                id="chatInput"
-                type="text"
-                placeholder="Ask me anything about cyber security...">
+    <div id="chatMessages">
 
-            <button id="sendChat">
+        <div class="bot-message">
 
-                Send
+            👋 Hello! I'm ScamShield AI.
 
-            </button>
+            <br><br>
+
+            I can help you identify scams, explain cyber threats,
+            detect phishing attempts, identify UPI fraud,
+            and answer cyber security questions.
 
         </div>
 
     </div>
+
+    <!-- Chat Input -->
+
+    <div class="chat-input">
+
+        <input
+            id="chatInput"
+            type="text"
+            placeholder="Ask me anything about cyber security...">
+
+        <button id="sendChat">
+
+            <i class="fa-solid fa-paper-plane"></i>
+
+            Send
+
+        </button>
+
+    </div>
+
+</div>
 
 </section>
 

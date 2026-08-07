@@ -8,1878 +8,1502 @@
 
 <title>ScamShield AI</title>
 
-<!-- Tailwind CSS -->
+<!-- Google Font -->
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Tailwind -->
+
 <script src="https://cdn.tailwindcss.com"></script>
 
-<!-- Icons -->
+<!-- Font Awesome -->
+
 <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
+<!-- ChartJS -->
 
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+<!-- Custom CSS -->
 
-<style>
-
-*{
-font-family:'Inter',sans-serif;
-}
-
-
-body{
-
-background:
-linear-gradient(
-135deg,
-#020617,
-#0f172a,
-#111827
-);
-
-color:white;
-
-min-height:100vh;
-
-overflow-x:hidden;
-
-}
-
-
-/* Animated cyber grid */
-
-body::before{
-
-content:"";
-
-position:fixed;
-
-inset:0;
-
-background-image:
-
-linear-gradient(
-rgba(59,130,246,.08) 1px,
-transparent 1px
-),
-
-linear-gradient(
-90deg,
-rgba(59,130,246,.08) 1px,
-transparent 1px
-);
-
-
-background-size:50px 50px;
-
-animation:gridMove 30s linear infinite;
-
-z-index:-2;
-
-}
-
-
-@keyframes gridMove{
-
-0%{
-transform:translate(0,0);
-}
-
-100%{
-
-transform:translate(50px,50px);
-
-}
-
-}
-
-
-/* Glow particles */
-
-.glow{
-
-position:fixed;
-
-width:400px;
-
-height:400px;
-
-border-radius:50%;
-
-filter:blur(120px);
-
-opacity:.35;
-
-z-index:-1;
-
-}
-
-
-.blue{
-
-background:#2563eb;
-
-top:10%;
-
-left:10%;
-
-}
-
-
-.purple{
-
-background:#9333ea;
-
-right:10%;
-
-bottom:10%;
-
-}
-
-
-
-/* Glass */
-
-.glass{
-
-background:
-rgba(255,255,255,.06);
-
-backdrop-filter:
-blur(20px);
-
-border:
-
-1px solid
-
-rgba(255,255,255,.1);
-
-}
-
-
-/* Sidebar buttons */
-
-.nav-btn{
-
-display:flex;
-
-align-items:center;
-
-gap:12px;
-
-width:100%;
-
-padding:14px;
-
-border-radius:14px;
-
-transition:.3s;
-
-color:#cbd5e1;
-
-}
-
-
-.nav-btn:hover{
-
-background:
-rgba(59,130,246,.25);
-
-color:white;
-
-transform:translateX(5px);
-
-}
-
-
-.active{
-
-background:
-linear-gradient(
-90deg,
-#2563eb,
-#7c3aed
-);
-
-color:white;
-
-}
-
-
-/* Gradient text */
-
-.gradient-text{
-
-background:
-
-linear-gradient(
-90deg,
-#38bdf8,
-#818cf8,
-#c084fc
-);
-
--webkit-background-clip:text;
-
-color:transparent;
-
-}
-
-
-/* Hide pages */
-
-.page{
-
-display:none;
-
-}
-
-
-.page.active-page{
-
-display:block;
-
-}
-
-
-</style>
+<link rel="stylesheet" href="css/style.css">
 
 </head>
 
-
-
 <body>
 
+<div id="particles"></div>
 
-<div class="glow blue"></div>
-
-<div class="glow purple"></div>
-
-
-
-<!-- APP CONTAINER -->
-
-<div class="flex min-h-screen">
-
+<!-- ========================= -->
 
 <!-- SIDEBAR -->
 
-<aside
-class="
-w-72
-fixed
-h-screen
-p-6
-glass
-border-r
-border-white/10
-">
+<!-- ========================= -->
 
+<aside id="sidebar">
 
-<div class="text-center mb-10">
+<div class="logo">
 
-
-<div
-class="
-text-5xl
-mb-3
-">
+<div class="logo-icon">
 
 🛡️
 
 </div>
 
-
-<h1
-class="
-text-2xl
-font-bold
-gradient-text
-">
+<h1>
 
 ScamShield AI
 
 </h1>
 
+<p>
 
-<p
-class="
-text-gray-400
-text-sm
-mt-2
-">
-
-AI Fraud Protection Platform
+AI Cyber Security Platform
 
 </p>
 
-
 </div>
 
+<nav>
 
-
-<nav class="space-y-3">
-
-
-<button class="nav-btn active"
-onclick="showPage('home')">
+<button class="nav active" data-page="home">
 
 <i class="fa-solid fa-house"></i>
 
-Home
+<span>Home</span>
 
 </button>
 
-
-
-<button class="nav-btn"
-onclick="showPage('analyzer')">
+<button class="nav" data-page="analyzer">
 
 <i class="fa-solid fa-shield-halved"></i>
 
-Scam Analyzer
+<span>Scam Analyzer</span>
 
 </button>
 
-
-
-<button class="nav-btn"
-onclick="showPage('url')">
+<button class="nav" data-page="url">
 
 <i class="fa-solid fa-link"></i>
 
-URL Checker
+<span>URL Scanner</span>
 
 </button>
 
-
-
-<button class="nav-btn"
-onclick="showPage('upi')">
+<button class="nav" data-page="upi">
 
 <i class="fa-solid fa-wallet"></i>
 
-UPI Safety
+<span>UPI Safety</span>
 
 </button>
 
-
-
-<button class="nav-btn"
-onclick="showPage('transaction')">
+<button class="nav" data-page="transaction">
 
 <i class="fa-solid fa-building-columns"></i>
 
-Transaction
+<span>Transaction</span>
 
 </button>
 
-
-
-<button class="nav-btn"
-onclick="showPage('chat')">
+<button class="nav" data-page="chat">
 
 <i class="fa-solid fa-robot"></i>
 
-AI Chat
+<span>AI Assistant</span>
 
 </button>
 
+<button class="nav" data-page="dashboard">
 
+<i class="fa-solid fa-chart-simple"></i>
 
-<button class="nav-btn"
-onclick="showPage('dashboard')">
-
-<i class="fa-solid fa-chart-line"></i>
-
-Dashboard
+<span>Dashboard</span>
 
 </button>
 
+<button class="nav" data-page="education">
 
+<i class="fa-solid fa-book-open"></i>
 
-<button class="nav-btn"
-onclick="showPage('education')">
-
-<i class="fa-solid fa-book"></i>
-
-Education
+<span>Education</span>
 
 </button>
 
+<button class="nav" data-page="emergency">
 
+<i class="fa-solid fa-phone"></i>
 
-<button class="nav-btn"
-onclick="showPage('emergency')">
-
-<i class="fa-solid fa-triangle-exclamation"></i>
-
-Emergency
+<span>Emergency</span>
 
 </button>
 
-
-
-<button class="nav-btn"
-onclick="showPage('settings')">
+<button class="nav" data-page="settings">
 
 <i class="fa-solid fa-gear"></i>
 
-Settings
+<span>Settings</span>
 
 </button>
 
-
 </nav>
 
+<div class="sidebar-bottom">
 
-
-<div
-class="
-absolute
-bottom-6
-left-6
-right-6
-glass
-rounded-xl
-p-4
-text-center
-">
-
-
-<p class="text-green-400 text-sm">
-
-● Protection Active
-
-</p>
-
-
-<p class="text-gray-400 text-xs mt-2">
-
-Browser Security Mode
-
-</p>
-
-
-</div>
-
-
-</aside>
-
-
-
-
-
-<!-- MAIN AREA -->
-
-
-<main
-class="
-ml-72
-p-8
-w-full
-">
-
-
-
-<!-- Pages will be inserted here -->
-
-<div id="app">
-
-
-<section
-id="home"
-class="page active-page">
-
-
-<!-- HERO -->
-
-<div
-class="
-glass
-rounded-3xl
-p-10
-relative
-overflow-hidden
-">
-
-
-<div
-class="
-absolute
-top-0
-right-0
-w-96
-h-96
-bg-blue-500
-opacity-20
-blur-3xl
-rounded-full
-">
-
-</div>
-
-
-<div
-class="
-grid
-md:grid-cols-2
-gap-10
-items-center
-">
-
+<div class="status-dot"></div>
 
 <div>
 
+<h4>Protection Active</h4>
 
-<div
-class="
-inline-flex
-items-center
-gap-2
-px-4
-py-2
-rounded-full
-bg-green-500/20
-text-green-400
-text-sm
-mb-6
-">
-
-<i class="fa-solid fa-shield-check"></i>
-
-AI Protection Active
+<p>Live AI Monitoring Enabled</p>
 
 </div>
 
+</div>
 
+</aside>
 
-<h1
-class="
-text-6xl
-font-extrabold
-leading-tight
-">
+<!-- ========================= -->
 
-Welcome to
+<!-- MAIN -->
 
-<br>
+<!-- ========================= -->
 
-<span class="gradient-text">
+<main>
 
-ScamShield AI
+<header>
+
+<div>
+
+<h2 id="pageTitle">
+
+Home
+
+</h2>
+
+<p>
+
+Welcome to ScamShield AI
+
+</p>
+
+</div>
+
+<div class="header-actions">
+
+<button>
+
+<i class="fa-solid fa-bell"></i>
+
+</button>
+
+<button>
+
+<i class="fa-solid fa-moon"></i>
+
+</button>
+
+<div class="profile">
+
+<img src="https://ui-avatars.com/api/?background=2563eb&color=fff&name=User">
+
+<span>User</span>
+
+</div>
+
+</div>
+
+</header>
+
+<!-- ================================================= -->
+
+<!-- HOME PAGE -->
+
+<!-- ================================================= -->
+
+<section id="home" class="page active">
+
+<div class="hero">
+
+<div class="hero-left">
+
+<div class="tag">
+
+<i class="fa-solid fa-shield"></i>
+
+AI Powered Cyber Protection
+
+</div>
+
+<h1>
+
+Stay One Step Ahead of
+
+<span>
+
+Online Scammers
 
 </span>
 
 </h1>
 
+<p>
 
-
-<p
-class="
-mt-6
-text-xl
-text-gray-300
-leading-relaxed
-">
-
-Protect yourself from phishing,
-online fraud, fake payments,
-malicious links and digital scams
-using intelligent analysis.
+ScamShield AI protects you from phishing attacks,
+fake websites,
+UPI fraud,
+QR scams,
+bank fraud,
+identity theft,
+and malicious links using intelligent AI-powered analysis.
 
 </p>
 
+<div class="hero-buttons">
 
+<button id="scanNow">
 
-<div
-class="
-flex
-gap-4
-mt-8
-flex-wrap
-">
-
-
-<button
-onclick="showPage('analyzer')"
-class="
-px-8
-py-4
-rounded-full
-bg-gradient-to-r
-from-blue-600
-to-purple-600
-font-semibold
-hover:scale-105
-transition
-">
-
-<i class="fa-solid fa-search"></i>
-
- Start Security Scan
+Start Scanning
 
 </button>
 
+<button id="learnMore">
 
-
-<button
-onclick="showPage('chat')"
-class="
-px-8
-py-4
-rounded-full
-glass
-hover:bg-white/10
-transition
-">
-
-<i class="fa-solid fa-robot"></i>
-
- Ask AI
+Learn More
 
 </button>
 
+</div>
 
 </div>
 
+<div class="hero-right">
+
+<div class="shield">
+
+<i class="fa-solid fa-shield-halved"></i>
 
 </div>
 
+<div class="floating-card">
 
+<h3>
 
+99.8%
 
-<!-- SHIELD -->
+</h3>
 
-<div
-class="
-flex
-justify-center
-">
+<p>
 
-
-<div
-class="
-relative
-">
-
-
-<div
-class="
-w-72
-h-72
-rounded-full
-bg-gradient-to-br
-from-blue-500
-to-purple-600
-flex
-items-center
-justify-center
-shadow-2xl
-shadow-blue-500/40
-animate-pulse
-">
-
-
-<i
-class="
-fa-solid
-fa-shield-halved
-text-white
-text-8xl
-">
-
-</i>
-
-
-</div>
-
-
-
-<div
-class="
-absolute
--bottom-5
-left-1/2
--transform
-translate-x-1/2
-glass
-px-6
-py-3
-rounded-full
-">
-
-99.8% Secure
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-
-
-
-<!-- STATISTICS -->
-
-
-<div
-class="
-grid
-md:grid-cols-4
-gap-6
-mt-8
-">
-
-
-<div
-class="
-glass
-rounded-2xl
-p-6
-">
-
-<i
-class="
-fa-solid
-fa-virus-slash
-text-3xl
-text-green-400
-">
-
-</i>
-
-
-<h2
-class="
-text-3xl
-font-bold
-mt-4
-">
-
-12,540+
-
-</h2>
-
-
-<p class="text-gray-400">
-
-Threats Detected
+Threat Detection Accuracy
 
 </p>
 
+</div>
 
 </div>
 
+</div>
 
+<!-- Statistics -->
 
+<section class="stats">
 
+<div class="card">
 
-<div
-class="
-glass
-rounded-2xl
-p-6
-">
+<h2>
 
-
-<i
-class="
-fa-solid
-fa-link-slash
-text-3xl
-text-red-400
-">
-
-</i>
-
-
-<h2
-class="
-text-3xl
-font-bold
-mt-4
-">
-
-8,920+
+12,584
 
 </h2>
 
+<p>
 
-<p class="text-gray-400">
-
-Fake Links Blocked
+Threats Blocked
 
 </p>
 
-
 </div>
 
+<div class="card">
 
+<h2>
 
-
-
-<div
-class="
-glass
-rounded-2xl
-p-6
-">
-
-
-<i
-class="
-fa-solid
-fa-users
-text-3xl
-text-blue-400
-">
-
-</i>
-
-
-<h2
-class="
-text-3xl
-font-bold
-mt-4
-">
-
-50K+
+53,281
 
 </h2>
 
+<p>
 
-<p class="text-gray-400">
-
-Users Protected
+Protected Users
 
 </p>
 
+</div>
+
+<div class="card">
+
+<h2>
+
+99.8%
+
+</h2>
+
+<p>
+
+Detection Accuracy
+
+</p>
 
 </div>
 
+<div class="card">
 
-
-
-
-<div
-class="
-glass
-rounded-2xl
-p-6
-">
-
-
-<i
-class="
-fa-solid
-fa-bolt
-text-3xl
-text-yellow-400
-">
-
-</i>
-
-
-<h2
-class="
-text-3xl
-font-bold
-mt-4
-">
+<h2>
 
 24/7
 
 </h2>
 
+<p>
 
-<p class="text-gray-400">
-
-Monitoring
+AI Monitoring
 
 </p>
 
-
 </div>
 
+</section>
 
-</div>
+<!-- Security Modules -->
 
+<section class="modules">
 
-
-
-
-<!-- FEATURES -->
-
-
-<h2
-class="
-text-4xl
-font-bold
-mt-16
-mb-8
-">
+<h2>
 
 Security Modules
 
 </h2>
 
+<div class="module-grid">
+ <!-- Module Card -->
 
+<div class="module-card">
 
+    <div class="icon blue">
+        <i class="fa-solid fa-message"></i>
+    </div>
 
-<div
-class="
-grid
-md:grid-cols-3
-gap-6
-">
+    <h3>AI Scam Analyzer</h3>
 
+    <p>
+        Analyze suspicious SMS, WhatsApp messages,
+        emails and fake offers using AI-powered
+        fraud detection.
+    </p>
 
-
-<div
-onclick="showPage('analyzer')"
-class="
-glass
-rounded-2xl
-p-8
-cursor-pointer
-hover:-translate-y-2
-transition
-">
-
-
-<i
-class="
-fa-solid
-fa-message
-text-4xl
-text-blue-400
-">
-
-</i>
-
-
-<h3
-class="
-text-2xl
-font-bold
-mt-5
-">
-
-Message Analyzer
-
-</h3>
-
-
-<p
-class="
-text-gray-400
-mt-3
-">
-
-Detect scam SMS,
-WhatsApp messages,
-emails and fake offers.
-
-</p>
-
+    <button data-page="analyzer">
+        Open Module
+    </button>
 
 </div>
 
+<!-- Module Card -->
 
+<div class="module-card">
 
+    <div class="icon purple">
+        <i class="fa-solid fa-link"></i>
+    </div>
 
+    <h3>URL Scanner</h3>
 
+    <p>
+        Scan suspicious websites before entering
+        passwords, OTPs or banking information.
+    </p>
 
-<div
-onclick="showPage('url')"
-class="
-glass
-rounded-2xl
-p-8
-cursor-pointer
-hover:-translate-y-2
-transition
-">
-
-
-<i
-class="
-fa-solid
-fa-globe
-text-4xl
-text-purple-400
-">
-
-</i>
-
-
-<h3
-class="
-text-2xl
-font-bold
-mt-5
-">
-
-URL Protection
-
-</h3>
-
-
-<p
-class="
-text-gray-400
-mt-3
-">
-
-Check suspicious websites
-before entering sensitive data.
-
-</p>
-
+    <button data-page="url">
+        Scan Website
+    </button>
 
 </div>
 
+<!-- Module Card -->
 
+<div class="module-card">
 
+    <div class="icon green">
+        <i class="fa-solid fa-wallet"></i>
+    </div>
 
+    <h3>UPI Protection</h3>
 
+    <p>
+        Verify suspicious UPI IDs and detect
+        payment fraud before sending money.
+    </p>
 
-<div
-onclick="showPage('upi')"
-class="
-glass
-rounded-2xl
-p-8
-cursor-pointer
-hover:-translate-y-2
-transition
-">
-
-
-<i
-class="
-fa-solid
-fa-wallet
-text-4xl
-text-green-400
-">
-
-</i>
-
-
-<h3
-class="
-text-2xl
-font-bold
-mt-5
-">
-
-Payment Safety
-
-</h3>
-
-
-<p
-class="
-text-gray-400
-mt-3
-">
-
-Protect UPI payments
-and financial transactions.
-
-</p>
-
+    <button data-page="upi">
+        Verify UPI
+    </button>
 
 </div>
 
+<!-- Module Card -->
+
+<div class="module-card">
+
+    <div class="icon orange">
+        <i class="fa-solid fa-building-columns"></i>
+    </div>
+
+    <h3>Transaction Check</h3>
+
+    <p>
+        Validate payment screenshots,
+        receipts and transaction details.
+    </p>
+
+    <button data-page="transaction">
+        Verify Payment
+    </button>
 
 </div>
 
-
-
-
-
-<!-- SAFETY MESSAGE -->
-
-
-<div
-class="
-mt-12
-glass
-rounded-2xl
-p-8
-border
-border-yellow-400/30
-">
-
-
-<h3
-class="
-text-2xl
-font-bold
-text-yellow-400
-">
-
-<i class="fa-solid fa-triangle-exclamation"></i>
-
- Never Share Sensitive Information
-
-</h3>
-
-
-<p
-class="
-mt-4
-text-gray-300
-">
-
-ScamShield will never ask for OTP,
-UPI PIN, password, CVV,
-or complete banking details.
-
-</p>
-
-
 </div>
-
-
 
 </section>
 
+<!-- Recent Threats -->
 
-<section 
-id="analyzer"
-class="page">
+<section class="recent-threats">
 
+<h2>
 
-<div
-class="
-glass
-rounded-3xl
-p-8
-">
+Recent Cyber Threats
 
+</h2>
 
-<h1
-class="
-text-4xl
-font-bold
-gradient-text
-">
+<div class="threat-list">
 
-<i class="fa-solid fa-shield-halved"></i>
-
-Scam Analyzer
-
-</h1>
-
-
-<p
-class="
-text-gray-400
-mt-3
-">
-
-Analyze suspicious SMS, WhatsApp messages,
-emails and online offers.
-
-</p>
-
-
-
-
-<div
-class="
-mt-8
-grid
-md:grid-cols-2
-gap-8
-">
-
-
-
-<!-- INPUT -->
-
+<div class="threat danger">
 
 <div>
 
+<h3>
 
-<label
-class="
-text-lg
-font-semibold
-">
+Fake Bank KYC Scam
+
+</h3>
+
+<p>
+
+Fraudsters are impersonating bank officials
+to collect OTP and debit card details.
+
+</p>
+
+</div>
+
+<span>
+
+High Risk
+
+</span>
+
+</div>
+
+<div class="threat warning">
+
+<div>
+
+<h3>
+
+Courier Delivery Scam
+
+</h3>
+
+<p>
+
+Victims receive fake parcel messages asking
+for payment through malicious links.
+
+</p>
+
+</div>
+
+<span>
+
+Medium Risk
+
+</span>
+
+</div>
+
+<div class="threat safe">
+
+<div>
+
+<h3>
+
+Google Account Alert
+
+</h3>
+
+<p>
+
+Always verify the sender before entering
+your password on any login page.
+
+</p>
+
+</div>
+
+<span>
+
+Awareness
+
+</span>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- Quick Actions -->
+
+<section class="quick-actions">
+
+<h2>
+
+Quick Security Actions
+
+</h2>
+
+<div class="action-grid">
+
+<button class="action-card" data-page="analyzer">
+
+<i class="fa-solid fa-magnifying-glass"></i>
+
+Analyze Message
+
+</button>
+
+<button class="action-card" data-page="url">
+
+<i class="fa-solid fa-globe"></i>
+
+Check Website
+
+</button>
+
+<button class="action-card" data-page="upi">
+
+<i class="fa-solid fa-wallet"></i>
+
+Verify UPI
+
+</button>
+
+<button class="action-card" data-page="chat">
+
+<i class="fa-solid fa-robot"></i>
+
+Ask AI
+
+</button>
+
+</div>
+
+</section>
+
+<!-- Live Security Feed -->
+
+<section class="live-feed">
+
+<h2>
+
+Live Security Feed
+
+</h2>
+
+<div class="feed">
+
+<div class="feed-item">
+
+<i class="fa-solid fa-circle-check text-green-500"></i>
+
+Blocked phishing website
+
+<span>
+
+2 minutes ago
+
+</span>
+
+</div>
+
+<div class="feed-item">
+
+<i class="fa-solid fa-circle-check text-blue-500"></i>
+
+Verified safe payment request
+
+<span>
+
+8 minutes ago
+
+</span>
+
+</div>
+
+<div class="feed-item">
+
+<i class="fa-solid fa-triangle-exclamation text-yellow-500"></i>
+
+Detected suspicious UPI ID
+
+<span>
+
+12 minutes ago
+
+</span>
+
+</div>
+
+<div class="feed-item">
+
+<i class="fa-solid fa-circle-xmark text-red-500"></i>
+
+Prevented fake login attempt
+
+<span>
+
+20 minutes ago
+
+</span>
+
+</div>
+
+</div>
+
+</section>
+
+</section>
+
+<!-- ========================================= -->
+<!-- SCAM ANALYZER PAGE -->
+<!-- ========================================= -->
+
+<section id="analyzer" class="page">
+
+<div class="page-header">
+
+<h1>
+
+<i class="fa-solid fa-shield-halved"></i>
+
+AI Scam Analyzer
+
+</h1>
+
+<p>
+
+Paste suspicious SMS, email, WhatsApp message
+or social media text to receive an instant
+AI-powered fraud analysis.
+
+</p>
+
+</div>
+
+<div class="analyzer-grid">
+
+<div class="input-panel">
+
+<label>
 
 Paste Suspicious Message
 
 </label>
 
-
 <textarea
-id="scamInput"
+id="messageInput"
+placeholder="Example:
 
-class="
-w-full
-h-64
-mt-3
-rounded-2xl
-bg-black/30
-border
-border-white/10
-p-5
-text-white
-outline-none
-focus:border-blue-500
-"
-
-placeholder="
-Example:
 Your bank account will be blocked.
-Click this link immediately...
-"
-></textarea>
+Click the link below immediately
+to update your KYC.
+Failure to comply will result
+in account suspension.">
 
+</textarea>
 
+<button id="analyzeMessage">
 
-<button
-
-onclick="analyzeScam()"
-
-class="
-mt-5
-px-8
-py-4
-rounded-full
-bg-gradient-to-r
-from-blue-600
-to-purple-600
-font-bold
-hover:scale-105
-transition
-">
-
-
-<i class="fa-solid fa-magnifying-glass"></i>
-
- Analyze Message
-
+Analyze Message
 
 </button>
 
-
 </div>
 
+<div class="result-panel">
 
+<div class="risk-circle">
 
-
-
-<!-- RESULT -->
-
-
-<div
-class="
-glass
-rounded-2xl
-p-6
-">
-
-
-<h2
-class="
-text-2xl
-font-bold
-">
-
-Risk Assessment
-
-</h2>
-
-
-
-<div
-class="
-mt-6
-text-center
-">
-
-
-<div
-id="riskNumber"
-
-class="
-text-6xl
-font-bold
-text-green-400
-">
+<h1 id="riskPercent">
 
 0%
-
-</div>
-
-
-
-<p
-id="riskLevel"
-
-class="
-text-xl
-mt-3
-text-gray-400
-">
-
-No Analysis
-
-</p>
-
-
-
-</div>
-
-
-
-
-<div
-class="
-mt-6
-h-5
-bg-gray-800
-rounded-full
-overflow-hidden
-">
-
-
-<div
-id="riskBar"
-
-class="
-h-full
-w-0
-transition-all
-duration-1000
-bg-gradient-to-r
-from-green-400
-via-yellow-400
-to-red-500
-">
-
-</div>
-
-
-</div>
-
-
-
-</div>
-
-
-</div>
-
-
-
-</div>
-
-
-
-
-
-
-<!-- DETAILS -->
-
-
-<div
-id="analysisDetails"
-
-class="
-hidden
-mt-8
-grid
-md:grid-cols-2
-gap-6
-">
-
-
-
-<div
-class="
-glass
-rounded-2xl
-p-6
-">
-
-
-<h3
-class="
-text-xl
-font-bold
-text-red-400
-">
-
-⚠ Warning Signs
-
-</h3>
-
-
-<ul
-id="warningList"
-
-class="
-mt-4
-space-y-3
-text-gray-300
-">
-
-</ul>
-
-
-</div>
-
-
-
-
-
-
-<div
-class="
-glass
-rounded-2xl
-p-6
-">
-
-
-<h3
-class="
-text-xl
-font-bold
-text-green-400
-">
-
-🛡 Safety Advice
-
-</h3>
-
-
-<ul
-id="adviceList"
-
-class="
-mt-4
-space-y-3
-text-gray-300
-">
-
-
-</ul>
-
-
-</div>
-
-
-
-</div>
-
-
-
-</section>
-
-<section
-id="url"
-class="page">
-
-
-<div
-class="
-glass
-rounded-3xl
-p-8
-">
-
-
-<h1
-class="
-text-4xl
-font-bold
-gradient-text
-">
-
-<i class="fa-solid fa-globe"></i>
-
-URL Security Checker
 
 </h1>
 
+<p id="riskStatus">
 
-<p
-class="
-text-gray-400
-mt-3
-">
-
-Check suspicious websites before opening
-or entering personal information.
+Waiting for Analysis
 
 </p>
 
+</div>
 
+<div class="progress">
 
-<div
-class="
-mt-8
-grid
-md:grid-cols-2
-gap-8
-">
-
-
-
-<!-- URL INPUT -->
-
-<div>
-
-
-<label
-class="
-text-lg
-font-semibold
-">
-
-Enter Website URL
-
-</label>
-
-
-
-<input
-
-id="urlInput"
-
-class="
-w-full
-mt-3
-p-5
-rounded-2xl
-bg-black/30
-border
-border-white/10
-outline-none
-focus:border-blue-500
-"
-
-placeholder="
-example.com
-"
-/>
-
-
-
-<button
-
-onclick="scanURL()"
-
-class="
-mt-5
-px-8
-py-4
-rounded-full
-bg-gradient-to-r
-from-cyan-500
-to-blue-600
-font-bold
-hover:scale-105
-transition
-">
-
-
-<i class="fa-solid fa-radar"></i>
-
- Scan Website
-
-
-</button>
-
+<div id="riskBar">
 
 </div>
 
+</div>
 
+<div class="analysis-list">
 
+<h3>
 
+Detected Indicators
 
+</h3>
 
-<!-- RESULT -->
+<ul id="analysisOutput">
 
-<div
-class="
-glass
-rounded-2xl
-p-6
-">
+<li>
 
+No analysis yet.
 
-<h2
-class="
-text-2xl
-font-bold
-">
+</li>
 
-Website Risk
+</ul>
+
+</div>
+
+</div>
+
+</div>
+
+<section class="tips">
+
+<h2>
+
+AI Recommendations
 
 </h2>
 
+<div class="tips-grid">
 
+<div>
 
-<div
-class="
-text-center
-mt-6
-">
-
-
-<div
-
-id="urlScore"
-
-class="
-text-6xl
-font-bold
-text-green-400
-">
-
-0%
+✔ Never share OTP with anyone.
 
 </div>
 
+<div>
 
-
-<p
-
-id="urlStatus"
-
-class="
-mt-3
-text-xl
-text-gray-400
-">
-
-Waiting for scan
-
-</p>
-
+✔ Banks never ask for passwords.
 
 </div>
 
+<div>
 
-
-
-<div
-class="
-mt-6
-h-5
-bg-gray-800
-rounded-full
-overflow-hidden
-">
-
-
-<div
-
-id="urlBar"
-
-class="
-h-full
-w-0
-transition-all
-duration-1000
-bg-gradient-to-r
-from-green-400
-to-red-500
-">
+✔ Verify unknown phone numbers.
 
 </div>
 
+<div>
+
+✔ Avoid clicking suspicious links.
 
 </div>
 
-
 </div>
-
-
-</div>
-
-
-
-
-
-
-<div
-
-id="urlDetails"
-
-class="
-hidden
-mt-8
-grid
-md:grid-cols-2
-gap-6
-">
-
-
-<div
-class="
-glass
-rounded-2xl
-p-6
-">
-
-
-<h3
-class="
-text-xl
-font-bold
-text-red-400
-">
-
-⚠ Detected Issues
-
-</h3>
-
-
-<ul
-id="urlWarnings"
-class="
-mt-4
-space-y-3
-text-gray-300
-">
-
-</ul>
-
-
-</div>
-
-
-
-
-
-<div
-class="
-glass
-rounded-2xl
-p-6
-">
-
-
-<h3
-class="
-text-xl
-font-bold
-text-green-400
-">
-
-🛡 Recommendations
-
-</h3>
-
-
-<ul
-id="urlAdvice"
-class="
-mt-4
-space-y-3
-text-gray-300
-">
-
-
-</ul>
-
-
-</div>
-
-
-
-</div>
-
-
-</div>
-
-
 
 </section>
 
-<section id="upi" class="page"></section>
+</section>
 
-<section id="transaction" class="page"></section>
+<!-- ========================================= -->
+<!-- URL SCANNER PAGE STARTS HERE -->
+<!-- ========================================= -->
 
-<section id="chat" class="page"></section>
+<section id="url" class="page">
 
-<section id="dashboard" class="page"></section>
+<div class="page-header">
 
-<section id="education" class="page"></section>
+<h1>
 
-<section id="emergency" class="page"></section>
+<i class="fa-solid fa-link"></i>
 
-<section id="settings" class="page"></section>
+URL Security Scanner
 
+</h1>
+
+<p>
+
+Analyze suspicious websites and detect phishing,
+fake login pages, URL shortening services, and
+unsafe domains before visiting them.
+
+</p>
 
 </div>
 
+ <div class="scanner-grid">
 
+    <div class="input-panel">
+
+        <label>Enter Website URL</label>
+
+        <input
+            id="urlInput"
+            type="text"
+            placeholder="https://example.com">
+
+        <button id="scanURL">
+
+            Scan Website
+
+        </button>
+
+    </div>
+
+    <div class="result-panel">
+
+        <div class="risk-circle">
+
+            <h1 id="urlRisk">
+
+                Safe
+
+            </h1>
+
+            <p id="urlScore">
+
+                0%
+
+            </p>
+
+        </div>
+
+        <div class="progress">
+
+            <div id="urlBar"></div>
+
+        </div>
+
+        <ul id="urlResult">
+
+            <li>Waiting for scan...</li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- UPI SAFETY -->
+<!-- ===================================== -->
+
+<section id="upi" class="page">
+
+<div class="page-header">
+
+<h1>
+
+<i class="fa-solid fa-wallet"></i>
+
+UPI Safety Checker
+
+</h1>
+
+<p>
+
+Verify suspicious UPI IDs before making payments.
+
+</p>
+
+</div>
+
+<div class="scanner-grid">
+
+<div class="input-panel">
+
+<label>
+
+UPI ID
+
+</label>
+
+<input
+id="upiInput"
+placeholder="example@oksbi">
+
+<button id="verifyUPI">
+
+Verify UPI
+
+</button>
+
+</div>
+
+<div class="result-panel">
+
+<div class="risk-circle">
+
+<h1 id="upiStatus">
+
+Unknown
+
+</h1>
+
+<p>
+
+Waiting...
+
+</p>
+
+</div>
+
+<ul id="upiResult">
+
+<li>
+
+No verification yet.
+
+</li>
+
+</ul>
+
+</div>
+
+</div>
+
+<section class="tips">
+
+<h2>
+
+UPI Safety Tips
+
+</h2>
+
+<div class="tips-grid">
+
+<div>✔ Always verify the recipient name.</div>
+
+<div>✔ Never enter your UPI PIN to receive money.</div>
+
+<div>✔ Avoid unknown QR codes.</div>
+
+<div>✔ Double-check payment requests.</div>
+
+</div>
+
+</section>
+
+</section>
+
+<!-- ===================================== -->
+<!-- TRANSACTION -->
+<!-- ===================================== -->
+
+<section id="transaction" class="page">
+
+<div class="page-header">
+
+<h1>
+
+<i class="fa-solid fa-building-columns"></i>
+
+Transaction Verification
+
+</h1>
+
+<p>
+
+Verify transaction details before trusting payment confirmations.
+
+</p>
+
+</div>
+
+<div class="scanner-grid">
+
+<div class="input-panel">
+
+<label>
+
+Transaction ID
+
+</label>
+
+<input
+id="transactionInput"
+placeholder="Enter Transaction Reference">
+
+<button id="verifyTransaction">
+
+Verify Transaction
+
+</button>
+
+</div>
+
+<div class="result-panel">
+
+<div class="risk-circle">
+
+<h1>
+
+Pending
+
+</h1>
+
+<p>
+
+No Verification
+
+</p>
+
+</div>
+
+<ul id="transactionResult">
+
+<li>
+
+Awaiting transaction lookup...
+
+</li>
+
+</ul>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- AI ASSISTANT -->
+<!-- ===================================== -->
+
+<section id="chat" class="page">
+
+<div class="page-header">
+
+<h1>
+
+<i class="fa-solid fa-robot"></i>
+
+AI Security Assistant
+
+</h1>
+
+<p>
+
+Ask anything about online fraud, cyber security and digital safety.
+
+</p>
+
+</div>
+
+<div class="chat-container">
+
+<div id="chatMessages">
+
+<div class="bot-message">
+
+👋 Hello! I'm ScamShield AI.
+
+How can I help you stay safe online today?
+
+</div>
+
+</div>
+
+<div class="chat-input">
+
+<input
+id="chatInput"
+placeholder="Ask a cyber security question...">
+
+<button id="sendChat">
+
+Send
+
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- DASHBOARD -->
+<!-- ===================================== -->
+
+<section id="dashboard" class="page">
+
+<div class="page-header">
+
+<h1>
+
+<i class="fa-solid fa-chart-simple"></i>
+
+Security Dashboard
+
+</h1>
+
+</div>
+
+<div class="dashboard-grid">
+
+<div class="dashboard-card">
+
+<h2>
+
+Today's Threats
+
+</h2>
+
+<h1>
+
+128
+
+</h1>
+
+</div>
+
+<div class="dashboard-card">
+
+<h2>
+
+Scans Completed
+
+</h2>
+
+<h1>
+
+842
+
+</h1>
+
+</div>
+
+<div class="dashboard-card">
+
+<h2>
+
+Protected Devices
+
+</h2>
+
+<h1>
+
+52
+
+</h1>
+
+</div>
+
+<div class="dashboard-card">
+
+<h2>
+
+Security Score
+
+</h2>
+
+<h1>
+
+96%
+
+</h1>
+
+</div>
+
+</div>
+
+<div class="chart-card">
+
+<canvas id="dashboardChart"></canvas>
+
+</div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- EDUCATION -->
+<!-- ===================================== -->
+
+<section id="education" class="page">
+
+<div class="page-header">
+
+<h1>
+
+<i class="fa-solid fa-book-open"></i>
+
+Cyber Safety Academy
+
+</h1>
+
+</div>
+
+<div class="education-grid">
+
+<div class="lesson">
+
+<h3>
+
+Phishing Emails
+
+</h3>
+
+<p>
+
+Learn how attackers impersonate trusted brands.
+
+</p>
+
+</div>
+
+<div class="lesson">
+
+<h3>
+
+QR Code Fraud
+
+</h3>
+
+<p>
+
+Protect yourself from fake payment QR codes.
+
+</p>
+
+</div>
+
+<div class="lesson">
+
+<h3>
+
+UPI Scams
+
+</h3>
+
+<p>
+
+Common tricks used to steal money.
+
+</p>
+
+</div>
+
+<div class="lesson">
+
+<h3>
+
+OTP Fraud
+
+</h3>
+
+<p>
+
+Why you should never share your OTP.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- EMERGENCY -->
+<!-- ===================================== -->
+
+<section id="emergency" class="page">
+
+<div class="page-header">
+
+<h1>
+
+<i class="fa-solid fa-phone"></i>
+
+Emergency Help
+
+</h1>
+
+</div>
+
+<div class="emergency-grid">
+
+<div class="emergency-card">
+
+<h2>
+
+Lost Money?
+
+</h2>
+
+<p>
+
+Immediately contact your bank and report the fraud.
+
+</p>
+
+</div>
+
+<div class="emergency-card">
+
+<h2>
+
+Report Cyber Crime
+
+</h2>
+
+<p>
+
+Keep screenshots, transaction IDs and messages as evidence.
+
+</p>
+
+</div>
+
+<div class="emergency-card">
+
+<h2>
+
+Block Your Account
+
+</h2>
+
+<p>
+
+Freeze cards and change passwords immediately.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- SETTINGS -->
+<!-- ===================================== -->
+
+<section id="settings" class="page">
+
+<div class="page-header">
+
+<h1>
+
+<i class="fa-solid fa-gear"></i>
+
+Settings
+
+</h1>
+
+</div>
+
+<div class="settings-grid">
+
+<label>
+
+<input type="checkbox">
+
+Enable Notifications
+
+</label>
+
+<label>
+
+<input type="checkbox" checked>
+
+Dark Mode
+
+</label>
+
+<label>
+
+<input type="checkbox">
+
+Save Scan History
+
+</label>
+
+<label>
+
+Language
+
+<select>
+
+<option>English</option>
+
+<option>Hindi</option>
+
+<option>Kannada</option>
+
+</select>
+
+</label>
+
+</div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- FOOTER -->
+<!-- ===================================== -->
+
+<footer>
+
+<p>
+
+© 2026 ScamShield AI • Stay Safe. Stay Secure.
+
+</p>
+
+</footer>
 
 </main>
 
-
-</div>
-
-
-
-<script>
-
-
-function showPage(page){
-
-
-document.querySelectorAll(".page")
-.forEach(p=>{
-
-p.classList.remove("active-page");
-
-});
-
-
-document.getElementById(page)
-.classList.add("active-page");
-
-
-
-document.querySelectorAll(".nav-btn")
-.forEach(btn=>{
-
-btn.classList.remove("active");
-
-});
-
-event.target.closest("button")
-.classList.add("active");
-
-
-}
-
-
-</script>
-
-
+<script src="js/app.js"></script>
+<script src="js/analyzer.js"></script>
+<script src="js/urlChecker.js"></script>
+<script src="js/upi.js"></script>
+<script src="js/transaction.js"></script>
+<script src="js/chatbot.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/education.js"></script>
+<script src="js/settings.js"></script>
 
 </body>
-
 </html>

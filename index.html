@@ -1038,52 +1038,66 @@
 
 <div class="chat-container">
 
-    <!-- Chat Toolbar -->
-
     <div class="chat-toolbar">
 
-        <button onclick="clearChat()">
-
+        <button id="clearChatBtn">
             <i class="fa-solid fa-trash"></i>
-
             Clear Chat
+        </button>
 
+        <button id="exportChatBtn">
+            <i class="fa-solid fa-download"></i>
+            Export
         </button>
 
     </div>
 
-    <!-- Chat Messages -->
+    <div class="suggestions" id="chatSuggestions">
+
+        <button class="suggestion">
+            What is phishing?
+        </button>
+
+        <button class="suggestion">
+            Is it safe to share OTP?
+        </button>
+
+        <button class="suggestion">
+            How do I identify fake websites?
+        </button>
+
+        <button class="suggestion">
+            What is UPI fraud?
+        </button>
+
+    </div>
 
     <div id="chatMessages">
 
         <div class="bot-message">
 
-            👋 Hello! I'm ScamShield AI.
+            👋 Welcome to ScamShield AI.
 
             <br><br>
 
-            I can help you identify scams, explain cyber threats,
-            detect phishing attempts, identify UPI fraud,
-            and answer cyber security questions.
+            Ask me anything about cyber security,
+            phishing, UPI fraud, banking scams,
+            passwords or online safety.
 
         </div>
 
     </div>
-
-    <!-- Chat Input -->
 
     <div class="chat-input">
 
         <input
             id="chatInput"
             type="text"
-            placeholder="Ask me anything about cyber security...">
+            placeholder="Ask a cybersecurity question...">
 
         <button id="sendChat">
 
             <i class="fa-solid fa-paper-plane"></i>
-
-            Send
 
         </button>
 

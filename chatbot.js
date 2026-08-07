@@ -1,573 +1,952 @@
 /* ==========================================================
     ScamShield AI
     chatbot.js
+    Version 2.0
 ========================================================== */
 
-document.addEventListener("DOMContentLoaded", () => {
-
-    initializeChatbot();
-
-});
+"use strict";
 
 /* ==========================================================
-INITIALIZE
+CHATBOT CLASS
 ========================================================== */
 
-function initializeChatbot() {
+class ScamShieldChatbot {
 
-    const sendButton =
-        document.getElementById("sendChat");
+    constructor() {
 
-    const input =
-        document.getElementById("chatInput");
+        this.messages =
+            document.getElementById("chatMessages");
 
-    if (!sendButton || !input) return;
+        this.input =
+            document.getElementById("chatInput");
 
-    sendButton.addEventListener("click", sendMessage);
+        this.sendButton =
+            document.getElementById("sendChat");
 
-    input.addEventListener("keypress", e => {
+        this.clearButton =
+            document.getElementById("clearChatBtn");
 
-        if (e.key === "Enter") {
+        this.exportButton =
+            document.getElementById("exportChatBtn");
 
-            sendMessage();
+        this.suggestionButtons =
+            document.querySelectorAll(".suggestion");
+
+        this.chatHistory = [];
+
+        this.typing = false;
+
+        this.initialize();
+
+        this.lastQuestion = "";
+
+    }
+
+    /* ======================================================
+       INITIALIZE
+    ====================================================== */
+
+    initialize() {
+
+        if (
+            !this.messages ||
+            !this.input ||
+            !this.sendButton
+        ) return;
+
+this.attachEvents();
+
+this.enableCopyButtons();
+
+this.loadHistory();
+
+    }
+
+    /* ======================================================
+       EVENTS
+    ====================================================== */
+
+    attachEvents() {
+
+        this.sendButton.addEventListener(
+            "click",
+            () => this.sendMessage()
+        );
+
+        this.input.addEventListener(
+            "keypress",
+            e => {
+
+                if (e.key === "Enter") {
+
+                    this.sendMessage();
+
+                }
+
+            }
+        );
+
+        if (this.clearButton) {
+
+            this.clearButton.addEventListener(
+                "click",
+                () => this.clearChat()
+            );
 
         }
 
-    });
+        if (this.exportButton) {
 
-}
+            this.exportButton.addEventListener(
+                "click",
+                () => this.exportChat()
+            );
 
-/* ==========================================================
-SEND MESSAGE
-========================================================== */
+        }
 
-function sendMessage() {
+        this.suggestionButtons.forEach(button => {
 
-    const input =
-        document.getElementById("chatInput");
+            button.addEventListener("click", () => {
 
-    const text =
-        input.value.trim();
+                this.input.value =
+                    button.textContent.trim();
 
-    if (text === "") return;
+                this.sendMessage();
 
-    addUserMessage(text);
+            });
 
-    input.value = "";
+        });
 
-    setTimeout(() => {
+    }
 
-        const reply =
-            generateResponse(text);
+    /* ======================================================
+       SEND MESSAGE
+    ====================================================== */
 
-        addBotMessage(reply);
+    sendMessage() {
 
-    }, 600);
+        const text =
+            this.input.value.trim();
 
-}
+        if (!text) return;
 
-/* ==========================================================
-ADD USER MESSAGE
-========================================================== */
+        this.addMessage(
+            "user",
+            text
+        );
 
-function addUserMessage(message) {
+        this.input.value = "";
 
-    const container =
-        document.getElementById("chatMessages");
+        this.showTyping();
 
-    const div =
-        document.createElement("div");
+        setTimeout(() => {
 
-    div.className = "user-message";
+            const reply =
+                this.generateResponse(text);
 
-    div.textContent = message;
+            this.hideTyping();
 
-    container.appendChild(div);
+            this.addMessage(
+                "bot",
+                reply
+            );
 
-    scrollChat();
+        }, 900);
 
-}
+    }
 
-/* ==========================================================
-ADD BOT MESSAGE
-========================================================== */
+    /* ======================================================
+       ADD MESSAGE
+    ====================================================== */
 
-function addBotMessage(message) {
+    addMessage(type, message) {
 
-    const container =
-        document.getElementById("chatMessages");
+        const div =
+            document.createElement("div");
 
-    const div =
-        document.createElement("div");
+        div.className =
+            type === "user"
+            ? "user-message"
+            : "bot-message";
 
-    div.className = "bot-message";
+        div.innerHTML = `
 
-    div.innerHTML = message;
+            <div class="chat-content">
 
-    container.appendChild(div);
+                ${message}
 
-    scrollChat();
+            </div>
 
-}
+            <div class="chat-footer">
 
-/* ==========================================================
-AUTO SCROLL
-========================================================== */
+                <small>
 
-function scrollChat() {
+                    ${this.currentTime()}
 
-    const container =
-        document.getElementById("chatMessages");
+                </small>
 
-    container.scrollTop =
-        container.scrollHeight;
+                ${
+                    type === "bot"
+                    ?
 
-}
+                    `<button class="copyBtn">
 
-/* ==========================================================
-AI KNOWLEDGE BASE
-========================================================== */
+                        Copy
 
-const knowledgeBase = [
+                    </button>`
 
-    {
-        keywords: ["phishing", "phishing email", "fake email"],
-        answer: `
+                    :
+
+                    ""
+
+                }
+
+            </div>
+
+        `;
+
+        this.messages.appendChild(div);
+
+        this.messages.scrollTop =
+            this.messages.scrollHeight;
+
+        this.chatHistory.push({
+
+            type,
+
+            message,
+
+            time:
+                this.currentTime()
+
+        });
+
+        this.saveHistory();
+
+    }
+
+    /* ======================================================
+       TYPING INDICATOR
+    ====================================================== */
+
+    showTyping() {
+
+        if (this.typing) return;
+
+        this.typing = true;
+
+        const div =
+            document.createElement("div");
+
+        div.id =
+            "typingIndicator";
+
+        div.className =
+            "bot-message";
+
+        div.innerHTML =
+
+            `🤖 <i>ScamShield AI is typing...</i>`;
+
+        this.messages.appendChild(div);
+
+        this.messages.scrollTop =
+            this.messages.scrollHeight;
+
+    }
+
+    hideTyping() {
+
+        this.typing = false;
+
+        const typing =
+            document.getElementById(
+                "typingIndicator"
+            );
+
+        if (typing)
+            typing.remove();
+
+    }
+
+    /* ======================================================
+       CURRENT TIME
+    ====================================================== */
+
+    currentTime() {
+
+        return new Date()
+            .toLocaleTimeString([], {
+
+                hour: "2-digit",
+
+                minute: "2-digit"
+
+            });
+
+    }
+    /* ======================================================
+       KNOWLEDGE BASE
+    ====================================================== */
+
+    knowledgeBase = [
+
+        {
+            topic: "Phishing",
+            keywords: [
+                "phishing",
+                "fake email",
+                "email scam",
+                "fake website"
+            ],
+            response: `
 <b>🎣 Phishing Attack</b><br><br>
 
-Phishing is a cyber attack where criminals impersonate trusted organizations to steal:
+Phishing is a cyber attack where criminals pretend to be trusted organizations to steal:
 
 • Passwords
 • OTPs
-• Banking details
+• Bank details
 • Credit card information
 
-<b>Stay Safe:</b>
+<b>How to stay safe:</b><br>
 
-✔ Verify the sender's email address<br>
-✔ Don't click suspicious links<br>
-✔ Never share your OTP<br>
-✔ Contact the organization directly
+✔ Check the sender carefully<br>
+✔ Verify website URLs<br>
+✔ Never share OTPs<br>
+✔ Avoid clicking unknown links
 `
-    },
+        },
 
-    {
-        keywords: ["otp", "one time password"],
-        answer: `
+        {
+            topic: "OTP",
+            keywords: [
+                "otp",
+                "one time password",
+                "verification code"
+            ],
+            response: `
 <b>🔐 OTP Safety</b><br><br>
 
-An OTP should NEVER be shared.
+Never share your OTP with anyone.
 
-Banks, UPI providers and government agencies NEVER ask for your OTP.
+Banks, payment apps and government agencies never ask for your OTP over calls, SMS or email.
 
-If someone asks for your OTP, it is almost certainly a scam.
+Sharing your OTP can allow attackers to complete unauthorized transactions.
 `
-    },
+        },
 
-    {
-        keywords: ["upi", "upi fraud", "payment"],
-        answer: `
-<b>💳 UPI Safety</b><br><br>
+        {
+            topic: "UPI",
+            keywords: [
+                "upi",
+                "upi fraud",
+                "upi scam",
+                "payment"
+            ],
+            response: `
+<b>💳 UPI Fraud Prevention</b><br><br>
 
 Before sending money:
 
-✔ Verify the receiver's name
-✔ Double-check the UPI ID
-✔ Never enter your UPI PIN to receive money
+✔ Verify the recipient name
+✔ Verify the UPI ID
+✔ Never enter your PIN to receive money
 ✔ Avoid unknown QR codes
-`
-    },
 
-    {
-        keywords: ["qr", "qr code"],
-        answer: `
+If someone asks you to enter your UPI PIN to receive money, it is a scam.
+`
+        },
+
+        {
+            topic: "QR Code",
+            keywords: [
+                "qr",
+                "qr code"
+            ],
+            response: `
 <b>📷 QR Code Scam</b><br><br>
 
-Scammers often send QR codes claiming you'll receive money.
+Scanning a QR code generally starts a payment process.
 
-Reality:
+If someone says:
 
-Scanning a QR code usually starts a PAYMENT.
+"Scan this QR code to receive money"
+
+that is a common scam tactic.
 
 Always verify before scanning.
 `
-    },
+        },
 
-    {
-        keywords: ["password", "strong password"],
-        answer: `
-<b>🔑 Password Tips</b><br><br>
+        {
+            topic: "Password",
+            keywords: [
+                "password",
+                "strong password"
+            ],
+            response: `
+<b>🔑 Password Security</b><br><br>
 
-Use:
+A strong password should:
 
-• 12+ characters
-• Uppercase
-• Lowercase
-• Numbers
-• Symbols
+• Be at least 12 characters
+• Include uppercase letters
+• Include lowercase letters
+• Include numbers
+• Include symbols
 
-Never reuse passwords across websites.
+Never reuse passwords across multiple websites.
 `
-    },
+        },
 
-    {
-        keywords: ["bank", "banking"],
-        answer: `
-<b>🏦 Banking Security</b><br><br>
+        {
+            topic: "Banking",
+            keywords: [
+                "bank",
+                "banking",
+                "account blocked"
+            ],
+            response: `
+<b>🏦 Banking Safety</b><br><br>
 
 Banks never ask for:
 
 • OTP
-• PIN
+• ATM PIN
 • CVV
 • Internet banking password
 
-Never share these with anyone.
+Never share these details with anyone.
 `
-    },
+        },
 
-    {
-        keywords: ["crypto", "bitcoin"],
-        answer: `
-<b>🪙 Crypto Scam Warning</b><br><br>
-
-Be cautious of:
-
-• Guaranteed returns
-• Double your money offers
-• Fake investment groups
-• Celebrity endorsements
-
-If it sounds too good to be true, it probably is.
-`
-    },
-
-    {
-        keywords: ["job", "job scam"],
-        answer: `
-<b>💼 Job Scam</b><br><br>
+        {
+            topic: "Investment Scam",
+            keywords: [
+                "investment",
+                "double money",
+                "profit"
+            ],
+            response: `
+<b>📈 Investment Scam</b><br><br>
 
 Warning signs:
 
-• Asking for registration fees
-• Asking you to pay before joining
+• Guaranteed returns
+• Double your money
+• Zero risk investments
+• Pressure to invest quickly
+
+Always verify financial companies before investing.
+`
+        },
+
+        {
+            topic: "Crypto Scam",
+            keywords: [
+                "crypto",
+                "bitcoin",
+                "ethereum"
+            ],
+            response: `
+<b>🪙 Crypto Scam</b><br><br>
+
+Be cautious of:
+
+• Guaranteed profits
+• Celebrity investment groups
+• Fake crypto exchanges
+• Recovery scams
+
+Research thoroughly before investing.
+`
+        },
+
+        {
+            topic: "Job Scam",
+            keywords: [
+                "job",
+                "job scam",
+                "work from home"
+            ],
+            response: `
+<b>💼 Job Scam</b><br><br>
+
+Common warning signs:
+
+• Paying registration fees
 • Unrealistic salaries
-• No interview process
+• No interview
+• Urgent joining
+
+Legitimate employers rarely ask candidates to pay money.
 `
-    },
+        },
 
-    {
-        keywords: ["investment"],
-        answer: `
-<b>📈 Investment Scam</b><br><br>
-
-Always verify:
-
-✔ SEBI registration
-✔ Company website
-✔ Reviews
-✔ Official contact details
-
-Avoid "Guaranteed Profit" schemes.
-`
-    },
-
-    {
-        keywords: ["hello", "hi", "hey"],
-        answer: `
+        {
+            topic: "Greeting",
+            keywords: [
+                "hello",
+                "hi",
+                "hey"
+            ],
+            response: `
 👋 Hello!
 
-I'm ScamShield AI.
+I'm <b>ScamShield AI</b>.
 
-I can help you with:
+You can ask me about:
 
 • Phishing
+• OTP Safety
+• Banking Fraud
 • UPI Fraud
-• Banking Security
-• Passwords
 • QR Code Scams
+• Password Security
+• Crypto Scams
+• Job Scams
 • Online Safety
-• Cybercrime Guidance
 `
-    }
+        }
 
-];
+    ];
 
-/* ==========================================================
-AI RESPONSE ENGINE
-========================================================== */
+    /* ======================================================
+       GENERATE RESPONSE
+    ====================================================== */
 
-function generateResponse(question) {
+    generateResponse(question) {
 
-    const query = question.toLowerCase();
+        const query =
+            question.toLowerCase();
 
-    for (const topic of knowledgeBase) {
+        // Remember last user question
+        this.lastQuestion = question;
 
-        for (const keyword of topic.keywords) {
+        for (const item of this.knowledgeBase) {
 
-            if (query.includes(keyword)) {
+            const found =
+                item.keywords.some(keyword =>
+                    query.includes(keyword)
+                );
 
-                return topic.answer;
+            if (found) {
+
+                return item.response;
 
             }
 
         }
 
-    }
-
-    return `
+        return `
 <b>🤖 ScamShield AI</b><br><br>
 
 I couldn't find an exact answer.
 
-You can ask me about:
+Try asking about:
 
 • Phishing
-• OTP scams
-• UPI fraud
-• QR code scams
-• Password safety
-• Banking security
-• Crypto scams
-• Job scams
-• Investment fraud
-• Online safety
+• OTP Safety
+• UPI Fraud
+• Banking Security
+• Passwords
+• QR Code Scams
+• Investment Scams
+• Crypto Scams
+• Job Scams
+• Online Safety
 
-I'll do my best to help.
+I'm continuously learning to help you stay safe online.
 `;
 
-}
+    }
 
-/* ==========================================================
-CHATBOT ENHANCEMENTS
-========================================================== */
+        /* ======================================================
+       SAVE CHAT HISTORY
+    ====================================================== */
 
-function showTypingIndicator() {
+    saveHistory() {
 
-    const container =
-        document.getElementById("chatMessages");
+        localStorage.setItem(
+            "scamshield_chat_history",
+            JSON.stringify(this.chatHistory)
+        );
 
-    const typing =
-        document.createElement("div");
+    }
 
-    typing.className = "bot-message";
+    /* ======================================================
+       LOAD CHAT HISTORY
+    ====================================================== */
 
-    typing.id = "typingIndicator";
+    loadHistory() {
 
-    typing.innerHTML =
-        "🤖 <i>ScamShield AI is typing...</i>";
+        const saved =
+            localStorage.getItem(
+                "scamshield_chat_history"
+            );
 
-    container.appendChild(typing);
+        if (!saved)
+            return;
 
-    scrollChat();
+        try {
 
-}
+            this.chatHistory =
+                JSON.parse(saved);
 
-function removeTypingIndicator() {
+            this.messages.innerHTML = "";
 
-    const typing =
-        document.getElementById("typingIndicator");
+            this.chatHistory.forEach(chat => {
 
-    if (typing) {
+                const div =
+                    document.createElement("div");
 
-        typing.remove();
+                div.className =
+                    chat.type === "user"
+                    ? "user-message"
+                    : "bot-message";
+
+                div.innerHTML = `
+
+                    <div class="chat-content">
+
+                        ${chat.message}
+
+                    </div>
+
+                    <div class="chat-footer">
+
+                        <small>
+
+                            ${chat.time}
+
+                        </small>
+
+                        ${chat.type === "bot"
+                            ? `<button class="copyBtn">Copy</button>`
+                            : ""}
+
+                    </div>
+
+                `;
+
+                this.messages.appendChild(div);
+
+            });
+
+            this.messages.scrollTop =
+                this.messages.scrollHeight;
+
+        }
+
+        catch {
+
+            localStorage.removeItem(
+                "scamshield_chat_history"
+            );
+
+        }
+
+    }
+
+    /* ======================================================
+       CLEAR CHAT
+    ====================================================== */
+
+    clearChat() {
+
+        if (!confirm(
+            "Clear the entire conversation?"
+        )) {
+
+            return;
+
+        }
+
+        this.chatHistory = [];
+
+        localStorage.removeItem(
+            "scamshield_chat_history"
+        );
+
+        this.messages.innerHTML = `
+
+            <div class="bot-message">
+
+                <div class="chat-content">
+
+                    👋 Welcome back!
+
+                    <br><br>
+
+                    Ask me anything about:
+
+                    <br><br>
+
+                    • Phishing
+
+                    <br>
+
+                    • UPI Fraud
+
+                    <br>
+
+                    • Banking Security
+
+                    <br>
+
+                    • Password Safety
+
+                    <br>
+
+                    • Online Scams
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+    /* ======================================================
+       EXPORT CHAT
+    ====================================================== */
+
+    exportChat() {
+
+        if (
+            this.chatHistory.length === 0
+        ) {
+
+            alert(
+                "No chat history available."
+            );
+
+            return;
+
+        }
+
+        let text =
+
+            "ScamShield AI Chat History\n\n";
+
+        this.chatHistory.forEach(chat => {
+
+            text +=
+
+                `[${chat.time}] ` +
+
+                `${chat.type.toUpperCase()}:\n` +
+
+                `${chat.message}\n\n`;
+
+        });
+
+        const blob =
+
+            new Blob(
+
+                [text],
+
+                {
+
+                    type: "text/plain"
+
+                }
+
+            );
+
+        const url =
+            URL.createObjectURL(blob);
+
+        const a =
+            document.createElement("a");
+
+        a.href = url;
+
+        a.download =
+            "ScamShield-Chat.txt";
+
+        a.click();
+
+        URL.revokeObjectURL(url);
+
+    }
+
+    /* ======================================================
+       COPY BOT RESPONSES
+    ====================================================== */
+
+    enableCopyButtons() {
+
+        this.messages.addEventListener(
+            "click",
+
+            event => {
+
+                if (
+                    !event.target.classList.contains(
+                        "copyBtn"
+                    )
+                ) {
+
+                    return;
+
+                }
+
+                const message =
+
+                    event.target
+                        .closest(".bot-message")
+                        .querySelector(".chat-content")
+                        .innerText;
+
+                navigator.clipboard
+                    .writeText(message);
+
+                event.target.innerText =
+                    "Copied!";
+
+                setTimeout(() => {
+
+                    event.target.innerText =
+                        "Copy";
+
+                }, 1500);
+
+            }
+
+        );
+
+    }
+
+        /* ======================================================
+       SMART SUGGESTIONS
+    ====================================================== */
+
+    showSuggestions() {
+
+        const suggestions = [
+
+            "What is phishing?",
+
+            "How can I identify fake websites?",
+
+            "Is it safe to share my OTP?",
+
+            "How does UPI fraud work?",
+
+            "How do I report cybercrime?"
+
+        ];
+
+        const container =
+            document.getElementById("chatSuggestions");
+
+        if (!container) return;
+
+        container.innerHTML = "";
+
+        suggestions.forEach(question => {
+
+            const button =
+                document.createElement("button");
+
+            button.className =
+                "suggestion";
+
+            button.textContent =
+                question;
+
+            button.addEventListener("click", () => {
+
+                this.input.value =
+                    question;
+
+                this.sendMessage();
+
+            });
+
+            container.appendChild(button);
+
+        });
+
+    }
+
+    /* ======================================================
+       WELCOME MESSAGE
+    ====================================================== */
+
+    showWelcomeMessage() {
+
+        if (this.chatHistory.length > 0)
+            return;
+
+        this.addMessage(
+            "bot",
+
+            `👋 <b>Welcome to ScamShield AI</b>
+
+            <br><br>
+
+            I can help you with:
+
+            <br><br>
+
+            • Phishing Detection
+
+            <br>
+
+            • UPI Fraud
+
+            <br>
+
+            • Banking Security
+
+            <br>
+
+            • QR Code Scams
+
+            <br>
+
+            • Password Safety
+
+            <br>
+
+            • Online Scam Awareness
+
+            <br><br>
+
+            Ask me anything to get started.`
+        );
+
+    }
+
+    /* ======================================================
+       IMPROVED INITIALIZATION
+    ====================================================== */
+
+    start() {
+
+        this.showSuggestions();
+
+        this.showWelcomeMessage();
 
     }
 
 }
 
 /* ==========================================================
-CURRENT TIME
+INITIALIZE CHATBOT
 ========================================================== */
 
-function getCurrentTime() {
+document.addEventListener("DOMContentLoaded", () => {
 
-    return new Date().toLocaleTimeString([], {
+    const chatbot = new ScamShieldChatbot();
 
-        hour: "2-digit",
-
-        minute: "2-digit"
-
-    });
-
-}
-
-/* ==========================================================
-OVERRIDE BOT MESSAGE
-========================================================== */
-
-function addBotMessage(message) {
-
-    const container =
-        document.getElementById("chatMessages");
-
-    const div =
-        document.createElement("div");
-
-    div.className = "bot-message";
-
-    div.innerHTML = `
-
-        <div class="chat-content">
-
-            ${message}
-
-        </div>
-
-        <div class="chat-footer">
-
-            <small>${getCurrentTime()}</small>
-
-            <button class="copyBtn">
-
-                Copy
-
-            </button>
-
-        </div>
-
-    `;
-
-    container.appendChild(div);
-
-    scrollChat();
-
-}
-
-/* ==========================================================
-OVERRIDE USER MESSAGE
-========================================================== */
-
-function addUserMessage(message) {
-
-    const container =
-        document.getElementById("chatMessages");
-
-    const div =
-        document.createElement("div");
-
-    div.className = "user-message";
-
-    div.innerHTML = `
-
-        <div class="chat-content">
-
-            ${message}
-
-        </div>
-
-        <small>
-
-            ${getCurrentTime()}
-
-        </small>
-
-    `;
-
-    container.appendChild(div);
-
-    scrollChat();
-
-}
-
-/* ==========================================================
-OVERRIDE SEND MESSAGE
-========================================================== */
-
-function sendMessage() {
-
-    const input =
-        document.getElementById("chatInput");
-
-    const text =
-        input.value.trim();
-
-    if (!text)
-        return;
-
-    addUserMessage(text);
-
-    input.value = "";
-
-    showTypingIndicator();
-
-    setTimeout(() => {
-
-        removeTypingIndicator();
-
-        const reply =
-            generateResponse(text);
-
-        addBotMessage(reply);
-
-    }, 900);
-
-}
-
-/* ==========================================================
-COPY RESPONSE
-========================================================== */
-
-document.addEventListener("click", e => {
-
-    if (!e.target.classList.contains("copyBtn"))
-        return;
-
-    const text =
-        e.target.parentElement
-               .previousElementSibling
-               .innerText;
-
-    navigator.clipboard.writeText(text);
-
-    e.target.textContent = "Copied!";
-
-    setTimeout(() => {
-
-        e.target.textContent = "Copy";
-
-    }, 1500);
+    chatbot.start();
 
 });
 
-/* ==========================================================
-CLEAR CHAT
-========================================================== */
-
-function clearChat() {
-
-    const container =
-        document.getElementById("chatMessages");
-
-    container.innerHTML = `
-
-    <div class="bot-message">
-
-        👋 Hello!
-
-        <br><br>
-
-        I'm ScamShield AI.
-
-        Ask me anything about
-
-        cyber security,
-
-        phishing,
-
-        UPI fraud,
-
-        online scams,
-
-        passwords,
-
-        banking,
-
-        or cybercrime.
-
-    </div>
-
-    `;
-
-}
-
+    

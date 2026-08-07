@@ -2300,7 +2300,75 @@ font-size:38px;
 }
 
 }
+.chat-toolbar{
 
+display:flex;
+
+justify-content:flex-end;
+
+margin-bottom:15px;
+
+}
+
+.chat-toolbar button{
+
+padding:10px 18px;
+
+border:none;
+
+border-radius:8px;
+
+background:#2563eb;
+
+color:white;
+
+cursor:pointer;
+
+}
+
+.chat-footer{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+margin-top:10px;
+
+font-size:.8rem;
+
+opacity:.8;
+
+}
+
+.copyBtn{
+
+border:none;
+
+background:#1e293b;
+
+color:white;
+
+padding:4px 10px;
+
+border-radius:6px;
+
+cursor:pointer;
+
+}
+
+.user-message small,
+
+.bot-message small{
+
+display:block;
+
+margin-top:8px;
+
+opacity:.6;
+
+}
 /* ==========================================================
 END OF FILE
 ========================================================== */
